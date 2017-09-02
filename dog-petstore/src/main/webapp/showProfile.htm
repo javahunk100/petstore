@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>ProiflePaghe</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+     
+</head>
+<body ng-app="profile-app" ng-controller="ProfileController">
+<img alt="" src="img/math.gif" height="150px;">
+<hr/>
+    <div style="margin-left: 30px;">
+    <form action="checkNumber.do">
+        <div class="form-group">
+            <label>Enter your Email........</label>
+            <input type="text" class="form-control"  name="email" placeholder="email" style="width: 300px;display: inline;margin-right: 40px;" ng-model="email"/>
+            <button type="button" class="btn btn-danger" style="display: inline;" ng-click="showProfile();">Show Profile</button>
+            <button type="button" class="btn btn-danger" style="display: inline;" ng-click="clearSearch();">Clear</button>
+        </div>
+        <hr/>
+        <table>
+         <tr>
+           <td>
+         <label>Name : </label><span style="margin-left: 20px;font-size: 16px;" ng-bind="pdata.name">Nagendra Kumar</span>
+           <br/>   <br/>
+           <label>Mobile : </label><span style="margin-left: 20px;font-size: 16px;" ng-bind="pdata.mobile">+0209292322</span>
+               <br/>   <br/>
+               <label>Education : </label><span style="margin-left: 20px;font-size: 16px;" ng-bind="pdata.education">M.Tech</span>
+                   <br/>   <br/>
+                 <label>Address : </label><span style="margin-left: 20px;font-size: 16px;" ng-bind="pdata.address">XA37 , Fremont , US</span>
+                </td>
+                <td style="padding-left: 125px;">
+                	<img alt=""  ng-src="img/{{pdata.image}}" height="150px;">
+                </td> 
+        </table>
+    </form>
+    <br/><br/>
+    <label style="color:blue"><img alt="" src="img/result.png" height="100px;">
+    </label>
+    </div>
+<script src="js/angular.js"></script>
+ <script type="text/javascript" src="js/profile.js"></script>
+</body>
+</html>

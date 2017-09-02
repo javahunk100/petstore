@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Upload Example code</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all"/>
+<script src="js/JIC.js" type="text/javascript"></script>
+<script>
+
+var output_format = "jpg";
+var quality=10;
+
+//load src and convert to a File instance object
+//work for any type of src, not only image src.
+//return a promise that resolves with a File instance
+function srcToFile(src, fileName, mimeType){
+  return (fetch(src)
+      .then(function(res){return res.arrayBuffer();})
+      .then(function(buf){return new File([buf], fileName, {type:mimeType});})
+  );
+}
+
+function convertToDataURLviaCanvas(url, callback, outputFormat){
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function(){
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        var dataURL;
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        dataURL = canvas.toDataURL(outputFormat);
+        callback(dataURL);
+        canvas = null; 
+    };
+    img.src = url;
+}
+  function renderImage(file) {
+	  
+	  console.log(file);
+	  // generate a new FileReader object
+	  var reader = new FileReader();
+
+	  // inject an image with the src url
+	  reader.onload = function(event) {
+	    the_url = event.target.result;
+	    $('#some_container_div').append("<img src='" + the_url + "' />");
+	    var source_image = document.createElement("IMG");
+	    source_image.src=the_url;
+	    var result_image = document.createElement("IMG");
+	    result_image.src = jic.compress(source_image,quality,output_format).src;
+	    console.log(")#)#)#  + ..");
+	    console.log(result_image.src);
+	    $('#tsome_container_div').append(result_image);
+	    //Write code to upload a file to the sever........................
+	    var callback= function(response){
+        	console.log("image uploaded successfully! :)");
+        	console.log(response);        	
+        }
+	    
+	    var type = "image/jpeg";
+	    var data = result_image.src;
+       // data = data.replace('data:' + type + ';base64,', '');
+	    var formData = new FormData();
+	    formData.append('file', data);
+	    // console.log(file);
+
+	    //var societe = $("input#societe").val();
+	    //var message = $("textarea#message").val();
+	    srcToFile(result_image.src, 'new.png', 'image/png').then(function(file){
+	    	var fd = new FormData();
+	        fd.append('file', file);
+	    	
+	        $.ajax({
+	          url: "uploadCompressImage.do",
+	          type: "POST",
+	          data: "file="+formData,
+	          cache: false,
+	          success: function(reponse) {
+	            if(reponse) {
+	              alert(reponse);
+	              // console.log(reponse);
+	              // $('#devis').trigger("reset");
+	            } else {
+	              alert('Erreur');
+	            }
+	          }
+	        });
+	    }); 
+	   }; 
+  	// when the file is read it triggers the onload event above.
+  	reader.readAsDataURL(file);
+}
+
+	$(document).ready(function(){
+		alert("0000000000000000000000000");
+		//detect a change in a file input with an id of “the-file-input”
+		$("#the-file-input").change(function() {
+			console.log("_#_#_#_loading..............");
+		    // will log a FileList object, view gifs below
+		    console.log(this.files.length);
+		    for(var x=0;x<this.files.length;x++){
+		    	 renderImage(this.files[x]);
+		    	 
+		    }
+		 // grab the first image in the FileList object and pass it to the function
+		   
+		});
+
+	});
+   function previewFile(){
+       var preview = document.querySelector('img'); //selects the query named img
+       //var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+       var files=document.querySelector('input[type=file]').files;
+       for(var x=0;x<files.length;x++){
+    	   var file=files[x];
+    	   alert(file);
+    	   /* var reader  = new FileReader();
+           reader.onloadend = function () {
+               preview.src = reader.result;
+           }
+           if (file) {
+               reader.readAsDataURL(file); //reads the data as a URL
+           } else {
+               preview.src = "";
+           } */
+       }
+      
+  }
+
+  //previewFile();  //calls the function named previewFile()
+  </script>
+</head>
+<body>
+<input id="the-file-input" type="file" multiple><br>
+<img src="" height="200" alt="Image preview...">
+<section id="some_container_div">
+
+</section>
+
+<h2>Output Rendered Image :- </h2>
+<section id="tsome_container_div">
+
+</section>
+</body>
+</html>

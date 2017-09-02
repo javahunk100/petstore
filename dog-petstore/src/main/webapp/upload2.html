@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Upload Example code</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all"/>
+<script src="js/JIC.js" type="text/javascript"></script>
+<script>
+
+var output_format = "jpg";
+var quality=10;
+  function renderImage(file) {
+	  // generate a new FileReader object
+	  var reader = new FileReader();
+
+	  // inject an image with the src url
+	  reader.onload = function(event) {
+	    the_url = event.target.result;
+	    $('#some_container_div').append("<img src='" + the_url + "' />");
+	    var source_image = document.createElement("IMG");
+	    source_image.src=the_url;
+	    var compressed_img_obj = document.createElement("IMG");
+	    compressed_img_obj.src = jic.compress(source_image,quality,output_format).src;
+	    $('#tsome_container_div').append(compressed_img_obj);
+	    //Write code to upload a file to the sever........................
+	    var callback= function(response){
+        	console.log("image uploaded successfully! :)");
+        	console.log(response);        	
+        }
+	    
+	    var callback= function(response){
+        	console.log("image uploaded successfully! :)");
+        	console.log(response);        	
+        }
+	    
+	   var errorCallback, duringCallback;
+	    //customHeaders={};
+	    // console.log(file);
+	    ///////////////////
+	    //ADD sendAsBinary compatibilty to older browsers
+	    //ADD sendAsBinary compatibilty to older browsers
+        if (XMLHttpRequest.prototype.sendAsBinary === undefined) {
+            XMLHttpRequest.prototype.sendAsBinary = function(string) {
+                var bytes = Array.prototype.map.call(string, function(c) {
+                    return c.charCodeAt(0) & 0xff;
+                });
+                this.send(new Uint8Array(bytes).buffer);
+            };
+        }
+	    
+        var filename= the_url;
+
+        var type = "image/jpeg";
+        if(filename.substr(-4).toLowerCase()==".png"){
+            type = "image/png";
+        }
+
+        var data = compressed_img_obj.src;
+        data = data.replace('data:' + type + ';base64,', '');
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', "uploadCompressImage.do", true);
+        var boundary = 'someboundary';
+
+        xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+	
+	// Set custom request headers if customHeaders parameter is provided
+/* 	if (customHeaders && typeof customHeaders === "object") {
+		for (var headerKey in customHeaders){
+			xhr.setRequestHeader(headerKey, customHeaders[headerKey]);
+		}
+	} */
+	
+	// If a duringCallback function is set as a parameter, call that to notify about the upload progress
+	if (duringCallback && duringCallback instanceof Function) {
+		xhr.upload.onprogress = function (evt) {
+			if (evt.lengthComputable) {  
+				duringCallback ((evt.loaded / evt.total)*100);  
+			}
+		};
+	}
+	
+        xhr.sendAsBinary(['--' + boundary, 'Content-Disposition: form-data; name="' + the_url + '"; filename="' + the_url + '"', 'Content-Type: ' + type, '', data, '--' + boundary + '--'].join('\r\n'));
+        
+        xhr.onreadystatechange = function() {
+		if (this.readyState == 4){
+			if (this.status == 200) {
+				successCallback(this.responseText);
+			}else if (this.status >= 400) {
+				if (errorCallback &&  errorCallback instanceof Function) {
+					errorCallback(this.responseText);
+				}
+			}
+		}
+        };
+	    
+	    
+///
+	    
+	   }; //end of onload
+  	// when the file is read it triggers the onload event above.
+  	reader.readAsDataURL(file);
+}
+
+	$(document).ready(function(){
+		alert("0000000000000000000000000");
+		//detect a change in a file input with an id of “the-file-input”
+		$("#the-file-input").change(function() {
+			console.log("_#_#_#_loading..............");
+		    // will log a FileList object, view gifs below
+		    console.log(this.files.length);
+		    for(var x=0;x<this.files.length;x++){
+		    	 renderImage(this.files[x]);
+		    	 
+		    }
+		 // grab the first image in the FileList object and pass it to the function
+		   
+		});
+
+	});
+   function previewFile(){
+       var preview = document.querySelector('img'); //selects the query named img
+       //var file    = document.querySelector('input[type=file]').files[0]; //sames as here
+       var files=document.querySelector('input[type=file]').files;
+       for(var x=0;x<files.length;x++){
+    	   var file=files[x];
+    	   alert(file);
+    	   /* var reader  = new FileReader();
+           reader.onloadend = function () {
+               preview.src = reader.result;
+           }
+           if (file) {
+               reader.readAsDataURL(file); //reads the data as a URL
+           } else {
+               preview.src = "";
+           } */
+       }
+      
+  }
+
+  //previewFile();  //calls the function named previewFile()
+  </script>
+</head>
+<body>
+<input id="the-file-input" type="file" multiple><br>
+<img src="" height="200" alt="Image preview...">
+<section id="some_container_div">
+
+</section>
+
+<h2>Output Rendered Image :- </h2>
+<section id="tsome_container_div">
+
+</section>
+</body>
+</html>
