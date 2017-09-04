@@ -11,7 +11,7 @@
 	<!-- This the package in which we will keep our controller/model/action used in spring mvc -->
    <context:component-scan base-package="com.petstore.web.controller"/>
    <context:component-scan base-package="com.petstore.web.rest.api"/>
-   
+    <context:component-scan base-package="com.petstore.web.rest.api.exception"/>
 
 
 		<!--  to enable spring annotation java code 

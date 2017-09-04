@@ -53,6 +53,14 @@ public class ProfileDaoImpl implements  ProfileDao {
 		DogProfileEntity dogProfileEntity=(DogProfileEntity)jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(DogProfileEntity.class));
 	*/	return photo;
 	}
+	
+	@Override
+	public String deleteDogByEmail(String email) {
+		String deletesql="delete  from dog_profile_tbl where email=?";
+		int row=jdbcTemplate.update(deletesql,email);
+		//row - return number of rows is deleted..
+		return row==0?"notdeleted":"deleted";
+	}
 
 
 	@Override

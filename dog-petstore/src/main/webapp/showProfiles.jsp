@@ -76,7 +76,9 @@
            </td>
            
               <td>
+              <a href="deleteDogByEmail.do?email=<%=entity.getEmail() %>">
               <img alt="" src="img/delete.png" height="24px;">
+               </a>
                /
               <img alt="" src="img/edit1.png" height="24px;">
               </td>

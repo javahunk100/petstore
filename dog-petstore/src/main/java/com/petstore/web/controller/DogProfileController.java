@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.petstore.web.controller.model.DogProfileEntity;
 import com.petstore.web.dao.ProfileDao;
@@ -34,6 +35,22 @@ public class DogProfileController {
 		//Creating spring container which is responsible for creating bean for the
 		//dao layer...............................
 		applicationContext=new ClassPathXmlApplicationContext("dog-profile-dao.xml");
+	}
+	
+	/**
+	 * 
+	 * @param dogProfileEntity
+	 * @param model
+	 * @return
+	 * http://localhost:8080/dog-petstore/deleteDogByEmail.do?email=amit@gmail.com
+	 */
+	@RequestMapping(value="deleteDogByEmail.do",method=RequestMethod.GET)
+	public String deleteDogByEmail(@RequestParam String email,Model model){
+		ProfileDao profileDao=(ProfileDao)applicationContext.getBean("ProfileDaoImpl");
+		profileDao.deleteDogByEmail(email);
+		//write logic to save data into the database
+		model.addAttribute("message", "Your dog profile has been deleted successfully with email "+email);
+		return "redirect:/showDogProfile.do";
 	}
 	
 	/**

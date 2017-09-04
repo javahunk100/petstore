@@ -13,4 +13,6 @@ public interface ProfileDao {
 	public byte[] findDogImageByDid(long did);
 
 	public DogProfileEntity findDogByDid(long did);
+
+	public String deleteDogByEmail(String email);
 }
